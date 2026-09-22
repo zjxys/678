@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}批改结果 - 高考语文作文批改{% endblock %}
+
+{% block content %}
+<section class="result-header">
+    <h1>批改结果</h1>
+    {% if result.essay and result.essay.title %}
+    <p class="essay-title-display">题目：《{{ result.essay.title }}》</p>
+    {% endif %}
+    <p class="char-info">共 {{ result.essay.char_count if result.essay else 0 }} 字</p>
+</section>
+
+<section class="score-overview">
+    <div class="total-score-card">
+        <div class="total-score-ring">
+            <span class="total-score-num">{{ "%.0f"|format(result.total_score) }}</span>
+            <span class="total-score-max">/ {{ result.max_total }}</span>
+        </div>
+        <div class="grade-label">{{ result.grade_label }}</div>
+    </div>
+
+    <div class="dimension-scores">
+        <div class="dim-score-item">
+            <div class="dim-score-header">
+                <span class="dim-name">内容</span>
+                <span class="dim-value">{{ "%.1f"|format(result.content_score) }}<small>/{{ result.max_content }}</small></span>
+            </div>
+            <div class="dim-bar">
+                <div class="dim-bar-fill" style="width: {{ (result.content_score / result.max_content * 100)|round }}%"></div>
+            </div>
+        </div>
+
+        <div class="dim-score-item">
+            <div class="dim-score-header">
+                <span class="dim-name">表达</span>
+                <span class="dim-value">{{ "%.1f"|format(result.expression_score) }}<small>/{{ result.max_expression }}</small></span>
+            </div>
+            <div class="dim-bar">
+                <div class="dim-bar-fill" style="width: {{ (result.expression_score / result.max_expression * 100)|round }}%"></div>
+            </div>
+        </div>
+
+        <div class="dim-score-item">
+            <div class="dim-score-header">
+                <span class="dim-name">发展等级</span>
+                <span class="dim-value">{{ "%.1f"|format(result.development_score) }}<small>/{{ result.max_development }}</small></span>
+            </div>
+            <div class="dim-bar">
+                <div class="dim-bar-fill" style="width: {{ (result.development_score / result.max_development * 100)|round }}%"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="detail-section">
+    <h2>维度详情</h2>
+    <div class="detail-grid">
+        {% for key, dim in result.dimension_results.items() %}
+        <div class="detail-card">
+            <h3>{{ dim.dimension }}</h3>
+            <div class="detail-score">{{ "%.1f"|format(dim.score) }} / {{ dim.max_score }}</div>
+            <div class="sub-dims">
+                {% for sub_key, sub_val in dim.details.items() %}
+                <div class="sub-dim-item">
+                    <span>{{ sub_val.max }}分制</span>
+                    <div class="sub-dim-bar">
+                        <div class="sub-dim-fill" style="width: {{ (sub_val.score / sub_val.max * 100)|round }}%"></div>
+                    </div>
+                    <span>{{ "%.1f"|format(sub_val.score) }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="feedback-section">
+    <h2>评语与反馈</h2>
+    <ul class="feedback-list">
+        {% for item in result.feedback %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<section class="suggestions-section">
+    <h2>改进建议</h2>
+    <ul class="suggestion-list">
+        {% for item in result.suggestions %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+</section>
+
+<div class="result-actions">
+    <a href="/" class="btn btn-secondary">返回修改</a>
+</div>
+{% endblock %}

@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}高考语文作文批改 - 首页{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>高考语文作文智能批改</h1>
+    <p class="subtitle">基于自然语言处理与评分规则引擎，从内容、表达、发展等级三大维度给出评分与反馈</p>
+</section>
+
+{% if error %}
+<div class="alert alert-error">{{ error }}</div>
+{% endif %}
+
+<section class="input-section">
+    <form action="/grade" method="POST" id="essay-form">
+        <div class="form-group">
+            <label for="title">作文题目 <span class="optional">（选填）</span></label>
+            <input type="text" id="title" name="title" value="{{ title or '' }}"
+                   placeholder="请输入作文题目，有助于题意分析" maxlength="100">
+        </div>
+
+        <div class="form-group">
+            <label for="essay">作文内容</label>
+            <div class="textarea-wrapper">
+                <textarea id="essay" name="essay" rows="18"
+                          placeholder="在此输入或粘贴你的作文内容..."
+                          maxlength="5000">{{ request.form.get('essay', '') }}</textarea>
+                <div class="char-counter">
+                    <span id="char-count">0</span> 字
+                    <span class="char-hint">（建议 800 字以上）</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submit-btn">
+                <span class="btn-text">提交批改</span>
+                <span class="btn-loading" style="display:none;">分析中...</span>
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="clearForm()">清空</button>
+        </div>
+    </form>
+</section>
+
+<section class="criteria-section" id="criteria">
+    <h2>评分标准</h2>
+    <div class="criteria-grid">
+        <div class="criteria-card">
+            <div class="criteria-header">
+                <span class="criteria-tag tag-blue">基础等级</span>
+                <span class="criteria-score">20 分</span>
+            </div>
+            <h3>内容</h3>
+            <ul>
+                <li><strong>题意</strong> — 切合题意，不跑题</li>
+                <li><strong>中心</strong> — 中心明确，主题突出</li>
+                <li><strong>内容</strong> — 内容充实，材料丰富</li>
+                <li><strong>感情</strong> — 感情真挚，思想健康</li>
+            </ul>
+        </div>
+
+        <div class="criteria-card">
+            <div class="criteria-header">
+                <span class="criteria-tag tag-green">基础等级</span>
+                <span class="criteria-score">20 分</span>
+            </div>
+            <h3>表达</h3>
+            <ul>
+                <li><strong>文体</strong> — 文体规范，特征鲜明</li>
+                <li><strong>结构</strong> — 结构严谨，层次分明</li>
+                <li><strong>语言</strong> — 语言通顺，用词准确</li>
+                <li><strong>卷面</strong> — 标点规范，格式整洁</li>
+            </ul>
+        </div>
+
+        <div class="criteria-card">
+            <div class="criteria-header">
+                <span class="criteria-tag tag-purple">发展等级</span>
+                <span class="criteria-score">20 分</span>
+            </div>
+            <h3>发展等级</h3>
+            <ul>
+                <li><strong>深刻</strong> — 透过现象看本质</li>
+                <li><strong>丰富</strong> — 材料丰富，论据充实</li>
+                <li><strong>有文采</strong> — 用词贴切，善用修辞</li>
+                <li><strong>有创新</strong> — 见解新颖，构思新巧</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section class="about-section" id="about">
+    <h2>关于本工具</h2>
+    <p>本工具采用 jieba 中文分词与规则引擎相结合的方式，对高考语文作文进行多维度自动分析。系统从题意切合度、中心论点、素材运用、结构逻辑、语言表达、思想深度等方面进行量化评估，给出参考分数与改进建议。</p>
+    <div class="tech-stack">
+        <span class="tech-badge">Python</span>
+        <span class="tech-badge">Flask</span>
+        <span class="tech-badge">jieba 分词</span>
+        <span class="tech-badge">规则引擎</span>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+initCharCounter('essay', 'char-count');
+initSubmitLoading('essay-form', 'submit-btn');
+</script>
+{% endblock %}
