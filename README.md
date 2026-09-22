@@ -96,11 +96,42 @@ class MyAnalyzer(BaseAnalyzer):
 self.analyzers["custom"] = MyAnalyzer()
 ```
 
+## 在线部署
+
+### 方式一：Render（推荐，免费）
+
+1. 将本仓库推送到 GitHub
+2. 访问 [render.com](https://render.com)，注册并连接 GitHub 账号
+3. 选择 "New Web Service" → 选择本仓库
+4. Render 会自动识别 `render.yaml` 配置，点击 "Apply" 即可
+5. 部署完成后获得 `https://你的应用名.onrender.com` 的在线地址
+
+### 方式二：Heroku
+
+1. 安装 Heroku CLI 并登录
+2. 执行以下命令：
+
+```bash
+heroku create 你的应用名
+git push heroku main
+heroku open
+```
+
+### 方式三：本地运行
+
+```bash
+pip install -r requirements.txt
+python app.py
+```
+
+浏览器访问 `http://127.0.0.1:5000`
+
 ## 技术栈
 
-- **后端**: Python + Flask
+- **后端**: Python + Flask + Gunicorn
 - **NLP**: jieba 分词 + 规则引擎
 - **前端**: HTML5 + CSS3 + 原生 JavaScript
+- **部署**: Render / Heroku 兼容
 
 ## License
 
